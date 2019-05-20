@@ -283,15 +283,15 @@ func (c *Client) CreateMapping(index string, docType string, mapping map[string]
 		if err != nil {
 			return errors.Trace(err)
 		}
+		reqURL = fmt.Sprintf("%s://%s/%s/%s/_mapping", c.Protocol, c.Addr,
+			url.QueryEscape(index),
+			url.QueryEscape(docType))
+
+		_, err = c.Do("POST", reqURL, mapping)
 	} else if r.Code != http.StatusOK {
 		return errors.Errorf("Error: %s, code: %d", http.StatusText(r.Code), r.Code)
 	}
 
-	reqURL = fmt.Sprintf("%s://%s/%s/%s/_mapping", c.Protocol, c.Addr,
-		url.QueryEscape(index),
-		url.QueryEscape(docType))
-
-	_, err = c.Do("POST", reqURL, mapping)
 	return errors.Trace(err)
 }
 
